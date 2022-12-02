@@ -9,6 +9,7 @@ public class Runner {
         othello.printBoard();
         othello.switchPlayer();
 
+        //test
     }
 
 }
