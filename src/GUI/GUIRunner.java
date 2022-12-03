@@ -13,10 +13,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.w3c.dom.css.Rect;
 import szte.mi.Move;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class GUIRunner extends Application implements EventHandler<ActionEvent> {
@@ -30,6 +33,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     
     Label blackScore = new Label("");
     Label whiteScore = new Label("");
+
 
     public static void main(String[] args) {
         launch(args);
@@ -79,6 +83,13 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             othelloButtons[4][4].draw(othello.WHITE);
             othelloButtons[4][4].setOnAction(null);
 
+            othelloButtons[2][3].drawRectangle();
+            othelloButtons[3][2].drawRectangle();
+            othelloButtons[4][5].drawRectangle();
+            othelloButtons[5][4].drawRectangle();
+
+
+
         } else if(alert.getResult() == modeAI) {
             KI ki = new KI(othello);
 
@@ -93,7 +104,6 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                 }
             }
 
-
             window.setScene(new Scene(split,1000,1000));
             window.show();
 
@@ -105,6 +115,12 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             othelloButtons[4][3].setOnAction(null);
             othelloButtons[4][4].draw(othello.WHITE);
             othelloButtons[4][4].setOnAction(null);
+
+
+            othelloButtons[2][3].drawRectangle();
+            othelloButtons[3][2].drawRectangle();
+            othelloButtons[4][5].drawRectangle();
+            othelloButtons[5][4].drawRectangle();
         }
 
 
@@ -165,8 +181,10 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         if(!othello.isGameEnd()) {
             if(e.getSource() instanceof OthelloButton) {
                 ((OthelloButton)e.getSource()).clicked(othello.getPlayer());
+                //((OthelloButton)e.getSource()).drawLegalMoves(othello.getPlayer());
                  blackScore.setText(""+othello.getBlackScore());
                  whiteScore.setText(""+othello.getWhiteScore());
+
             }
         }
 
@@ -183,17 +201,54 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             setPrefSize(size,size);
         }
 
+        public void drawRectangle() {
+            Rectangle rectangle = new Rectangle(98,98);
+            rectangle.setStroke(Color.BLACK);
+            rectangle.setFill(Color.TRANSPARENT);
+            rectangle.setStrokeWidth(3);
+
+            getChildren().add(rectangle);
+        }
+
+
+        public void drawLegalMoves(int player) {
+            othello.calcLegalMoves(player);
+            ArrayList<Move> alist = othello.getLegalMoves();
+
+            getChildren().clear();
+
+            for (int row = 0; row < othello.getBoard().length; row++) {
+                for (int column = 0; column < othello.getBoard().length; column++) {
+                    if (othello.getBoard()[row][column] == othello.BLACK) {
+                        othelloButtons[row][column].draw(othello.BLACK);
+                        othelloButtons[row][column].setOnAction(null);
+                    } else if (othello.getBoard()[row][column] == othello.WHITE) {
+                        othelloButtons[row][column].draw(othello.WHITE);
+                        othelloButtons[row][column].setOnAction(null);
+                    }
+                }
+            }
+
+            for (int i = 0; i < alist.size()-1; i++) {
+                othelloButtons[alist.get(i).x][alist.get(i).y].drawRectangle();
+            }
+        }
+
         public void clicked(int player){
             othello.calcLegalMoves(player);
             boolean legalMoveExist = !othello.getLegalMoves().isEmpty();
 
-            if (legalMoveExist) {
+            getChildren().clear();
+
+            if(legalMoveExist) {
+
                 if (othello.checkLegalMoves(player, new Move(row, column))) {
                     draw(player);
                     othello.guiSwitchPlayer(row,column);
 
                     for (int row = 0; row < othello.getBoard().length; row++) {
                         for (int column = 0; column < othello.getBoard().length; column++) {
+
                             if (othello.getBoard()[row][column] == othello.BLACK) {
                                 othelloButtons[row][column].draw(othello.BLACK);
                                 othelloButtons[row][column].setOnAction(null);
@@ -228,8 +283,6 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                 }
             }
         }
-
-
 
         public void draw(int player) {
             Circle circle = new Circle(size / 2, size / 2, size / 2);
