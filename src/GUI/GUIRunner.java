@@ -1,7 +1,9 @@
 package GUI;
 
 import Game.Othello;
+import KI.KI;
 import javafx.application.Application;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,6 +27,9 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     SplitPane split;
     AnchorPane pane;
     GridPane grid;
+    
+    Label blackScore = new Label("");
+    Label whiteScore = new Label("");
 
     public static void main(String[] args) {
         launch(args);
@@ -33,7 +38,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     public void start(Stage window) {
         grid = new GridPane();
         othello = new Othello();
-
+        
         window.setTitle("Othello");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -48,7 +53,34 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         alert.getButtonTypes().setAll(modeFriend, modeAI, buttonTypeCancel);
         Optional<ButtonType> result = alert.showAndWait();
 
-        if (alert.getResult() == modeAI || alert.getResult() == modeFriend) {
+        if (alert.getResult() == modeFriend) {
+
+            setPanes(grid);
+
+            for (int row = 0; row < othello.getBoard().length; row++) {
+                for (int column = 0; column < othello.getBoard().length; column++) {
+                    OthelloButton button = new OthelloButton(row,column);
+                    othelloButtons[row][column] = button;
+                    button.setOnAction(this);
+                    grid.add(button,column,row);
+                }
+            }
+
+
+            window.setScene(new Scene(split,1000,1000));
+            window.show();
+
+            othelloButtons[3][3].draw(othello.WHITE);
+            othelloButtons[3][3].setOnAction(null);
+            othelloButtons[3][4].draw(othello.BLACK);
+            othelloButtons[3][4].setOnAction(null);
+            othelloButtons[4][3].draw(othello.BLACK);
+            othelloButtons[4][3].setOnAction(null);
+            othelloButtons[4][4].draw(othello.WHITE);
+            othelloButtons[4][4].setOnAction(null);
+
+        } else if(alert.getResult() == modeAI) {
+            KI ki = new KI(othello);
 
             setPanes(grid);
 
@@ -97,15 +129,15 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         gameName.setLayoutY(14.0);
         gameName.setFont(new Font("Arial", 53.0));
 
-        Label scoreBlack = new Label(""+othello.getBlackScore());
-        scoreBlack.setLayoutX(170);
-        scoreBlack.setLayoutY(68.0);
-        scoreBlack.setFont(new Font("Arial", 35));
+        blackScore.setLayoutX(170);
+        blackScore.setLayoutY(68.0);
+        blackScore.setText(""+othello.getBlackScore());
+        blackScore.setFont(new Font("Arial", 35));
 
-        Label scoreWhite = new Label(""+othello.getWhiteScore());
-        scoreWhite.setLayoutX(685);
-        scoreWhite.setLayoutY(68.0);
-        scoreWhite.setFont(new Font("Arial", 35));
+        whiteScore.setLayoutX(685);
+        whiteScore.setLayoutY(68.0);
+        whiteScore.setText(""+othello.getWhiteScore());
+        whiteScore.setFont(new Font("Arial", 35));
 
         //Circle black and white
         Circle black = new Circle();
@@ -121,7 +153,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         white.setFill(Color.WHITE);
 
         pane.setBackground(new Background(new BackgroundFill(Color.FORESTGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-        pane.getChildren().addAll(gameName, black, white, scoreBlack, scoreWhite);
+        pane.getChildren().addAll(gameName, black, white, blackScore, whiteScore);
 
         split.getItems().addAll(pane, grid);
 
@@ -130,9 +162,14 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
     @Override
     public void handle(ActionEvent e) {
-        if(!othello.isGameEnd())
-            if(e.getSource() instanceof OthelloButton)
+        if(!othello.isGameEnd()) {
+            if(e.getSource() instanceof OthelloButton) {
                 ((OthelloButton)e.getSource()).clicked(othello.getPlayer());
+                 blackScore.setText(""+othello.getBlackScore());
+                 whiteScore.setText(""+othello.getWhiteScore());
+            }
+        }
+
     }
 
     class OthelloButton extends Button {
@@ -169,9 +206,11 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                 }
             } else {
                 othello.guiSwitchPlayer(row,column);
-
                 System.out.println("we are here");
+
                 if(othello.getPassCounter() == 2 || othello.checkFullBoard()) {
+                    System.out.println("we are here 22222");
+
                     othello.checkWinner();
                     if(othello.isGameEnd()) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);

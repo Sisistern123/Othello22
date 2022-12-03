@@ -19,6 +19,12 @@ public class KI implements Player {
 
     }
 
+    //GUI
+    public KI(Othello othello) {
+        this.othello = othello;
+
+    }
+
 
     @Override
     public void init(int order, long t, Random rnd) {
