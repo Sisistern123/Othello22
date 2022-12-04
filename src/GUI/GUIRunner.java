@@ -4,6 +4,7 @@ import Game.Othello;
 import KI.KI;
 import javafx.application.Application;
 
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,6 +35,8 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     Label blackScore = new Label("");
     Label whiteScore = new Label("");
 
+    boolean modeKI;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -58,69 +61,38 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         Optional<ButtonType> result = alert.showAndWait();
 
         if (alert.getResult() == modeFriend) {
-
-            setPanes(grid);
-
-            for (int row = 0; row < othello.getBoard().length; row++) {
-                for (int column = 0; column < othello.getBoard().length; column++) {
-                    OthelloButton button = new OthelloButton(row,column);
-                    othelloButtons[row][column] = button;
-                    button.setOnAction(this);
-                    grid.add(button,column,row);
-                }
-            }
-
-            window.setScene(new Scene(split,1000,1000));
-            window.show();
-
-            othelloButtons[3][3].draw(othello.WHITE);
-            othelloButtons[3][3].setOnAction(null);
-            othelloButtons[3][4].draw(othello.BLACK);
-            othelloButtons[3][4].setOnAction(null);
-            othelloButtons[4][3].draw(othello.BLACK);
-            othelloButtons[4][3].setOnAction(null);
-            othelloButtons[4][4].draw(othello.WHITE);
-            othelloButtons[4][4].setOnAction(null);
-
-            othelloButtons[2][3].drawRectangle();
-            othelloButtons[3][2].drawRectangle();
-            othelloButtons[4][5].drawRectangle();
-            othelloButtons[5][4].drawRectangle();
-
-
-
+            modeKI = false;
         } else if(alert.getResult() == modeAI) {
-            KI ki = new KI(othello);
-
-            setPanes(grid);
-
-            for (int row = 0; row < othello.getBoard().length; row++) {
-                for (int column = 0; column < othello.getBoard().length; column++) {
-                    OthelloButton button = new OthelloButton(row,column);
-                    othelloButtons[row][column] = button;
-                    button.setOnAction(this);
-                    grid.add(button,column,row);
-                }
-            }
-
-            window.setScene(new Scene(split,1000,1000));
-            window.show();
-
-            othelloButtons[3][3].draw(othello.WHITE);
-            othelloButtons[3][3].setOnAction(null);
-            othelloButtons[3][4].draw(othello.BLACK);
-            othelloButtons[3][4].setOnAction(null);
-            othelloButtons[4][3].draw(othello.BLACK);
-            othelloButtons[4][3].setOnAction(null);
-            othelloButtons[4][4].draw(othello.WHITE);
-            othelloButtons[4][4].setOnAction(null);
-
-            othelloButtons[2][3].drawRectangle();
-            othelloButtons[3][2].drawRectangle();
-            othelloButtons[4][5].drawRectangle();
-            othelloButtons[5][4].drawRectangle();
+            modeKI = true;
         }
 
+        setPanes(grid);
+
+        for (int row = 0; row < othello.getBoard().length; row++) {
+            for (int column = 0; column < othello.getBoard().length; column++) {
+                OthelloButton button = new OthelloButton(row,column);
+                othelloButtons[row][column] = button;
+                button.setOnAction(this);
+                grid.add(button,column,row);
+            }
+        }
+
+        window.setScene(new Scene(split,1000,1000));
+        window.show();
+
+        othelloButtons[3][3].draw(othello.WHITE);
+        othelloButtons[3][3].setOnAction(null);
+        othelloButtons[3][4].draw(othello.BLACK);
+        othelloButtons[3][4].setOnAction(null);
+        othelloButtons[4][3].draw(othello.BLACK);
+        othelloButtons[4][3].setOnAction(null);
+        othelloButtons[4][4].draw(othello.WHITE);
+        othelloButtons[4][4].setOnAction(null);
+
+        othelloButtons[2][3].drawRectangle();
+        othelloButtons[3][2].drawRectangle();
+        othelloButtons[4][5].drawRectangle();
+        othelloButtons[5][4].drawRectangle();
 
     }
 
@@ -176,30 +148,34 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
     @Override
     public void handle(ActionEvent e) {
+        if(modeKI) {
 
-        if(e.getSource() instanceof OthelloButton) {
-            if(!othello.isGameEnd()) {
-                ((OthelloButton)e.getSource()).clicked(othello.getPlayer());
-                 blackScore.setText(""+othello.getBlackScore());
-                 whiteScore.setText(""+othello.getWhiteScore());
+        } else {
+            if(e.getSource() instanceof OthelloButton) {
+                if(!othello.isGameEnd()) {
+                    ((OthelloButton)e.getSource()).clicked(othello.getPlayer());
+                    blackScore.setText(""+othello.getBlackScore());
+                    whiteScore.setText(""+othello.getWhiteScore());
 
-                othello.checkWinner();
+                    othello.checkWinner();
 
-                if(othello.isGameEnd()) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Game has ended.");
-                    alert.setHeaderText("Who won?");
-                    if(othello.getBlackScore()>othello.getWhiteScore()) {
-                        alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
-                    } else if(othello.getBlackScore()<othello.getWhiteScore()) {
-                        alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
-                    } else {
-                        alert.setContentText("Draw.");
+                    if(othello.isGameEnd()) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Game has ended.");
+                        alert.setHeaderText("Who won?");
+                        if(othello.getBlackScore()>othello.getWhiteScore()) {
+                            alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
+                        } else if(othello.getBlackScore()<othello.getWhiteScore()) {
+                            alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
+                        } else {
+                            alert.setContentText("Draw.");
+                        }
+                        alert.show();
                     }
-                    alert.show();
                 }
             }
         }
+
 
     }
 
@@ -242,7 +218,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             }
 
         }
-        public void clicked(int player){
+        public void clicked(int player) {
             othello.calcLegalMoves(player);
             boolean legalMoveExist = !othello.getLegalMoves().isEmpty();
 
@@ -267,17 +243,16 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                     }
                 }
             } else {
-                //TODO:geht nur rein, wenn gepasst wird
+                //geht nur rein, wenn gepasst wird
                 Alert pass = new Alert(Alert.AlertType.INFORMATION);
                 pass.setContentText("player "+ othello.getPlayer()+" passed.");
                 pass.show();
 
                 othello.guiSwitchPlayer(row,column);
-                System.out.println("we are here");
-
 
             }
         }
+
 
 
         public void draw(int player) {
