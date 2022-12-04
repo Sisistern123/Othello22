@@ -22,6 +22,7 @@ import szte.mi.Move;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Random;
 
 public class GUIRunner extends Application implements EventHandler<ActionEvent> {
 
@@ -142,14 +143,14 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         pane.getChildren().addAll(gameName, black, white, blackScore, whiteScore);
 
         split.getItems().addAll(pane, grid);
-
     }
-
 
     @Override
     public void handle(ActionEvent e) {
         if(modeKI) {
-
+            Random r = new Random();
+            KI hello = new KI();
+            hello.init(0, 1000L, r);
         } else {
             if(e.getSource() instanceof OthelloButton) {
                 if(!othello.isGameEnd()) {

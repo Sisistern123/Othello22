@@ -13,19 +13,6 @@ public class KI implements Player {
     private int currentPlayer = 1;
 
 
-    public KI(Othello othello, int order, Random rando, long t) {
-        this.othello = othello;
-        init(order, t, rando);
-
-    }
-
-    //GUI
-    public KI(Othello othello) {
-        this.othello = othello;
-
-    }
-
-
     @Override
     public void init(int order, long t, Random rnd) {
         if(order == 0) {
