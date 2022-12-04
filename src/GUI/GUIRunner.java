@@ -70,7 +70,6 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                 }
             }
 
-
             window.setScene(new Scene(split,1000,1000));
             window.show();
 
@@ -115,7 +114,6 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             othelloButtons[4][3].setOnAction(null);
             othelloButtons[4][4].draw(othello.WHITE);
             othelloButtons[4][4].setOnAction(null);
-
 
             othelloButtons[2][3].drawRectangle();
             othelloButtons[3][2].drawRectangle();
@@ -178,13 +176,28 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
     @Override
     public void handle(ActionEvent e) {
-        if(!othello.isGameEnd()) {
-            if(e.getSource() instanceof OthelloButton) {
+
+        if(e.getSource() instanceof OthelloButton) {
+            if(!othello.isGameEnd()) {
                 ((OthelloButton)e.getSource()).clicked(othello.getPlayer());
-                //((OthelloButton)e.getSource()).drawLegalMoves(othello.getPlayer());
                  blackScore.setText(""+othello.getBlackScore());
                  whiteScore.setText(""+othello.getWhiteScore());
 
+                othello.checkWinner();
+
+                if(othello.isGameEnd()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Game has ended.");
+                    alert.setHeaderText("Who won?");
+                    if(othello.getBlackScore()>othello.getWhiteScore()) {
+                        alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
+                    } else if(othello.getBlackScore()<othello.getWhiteScore()) {
+                        alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
+                    } else {
+                        alert.setContentText("Draw.");
+                    }
+                    alert.show();
+                }
             }
         }
 
@@ -212,37 +225,31 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
 
         public void drawLegalMoves(int player) {
+            getChildren().clear();
             othello.calcLegalMoves(player);
             ArrayList<Move> alist = othello.getLegalMoves();
-
-            getChildren().clear();
-
-            for (int row = 0; row < othello.getBoard().length; row++) {
-                for (int column = 0; column < othello.getBoard().length; column++) {
-                    if (othello.getBoard()[row][column] == othello.BLACK) {
-                        othelloButtons[row][column].draw(othello.BLACK);
-                        othelloButtons[row][column].setOnAction(null);
-                    } else if (othello.getBoard()[row][column] == othello.WHITE) {
-                        othelloButtons[row][column].draw(othello.WHITE);
-                        othelloButtons[row][column].setOnAction(null);
-                    }
-                }
-            }
 
             for (int i = 0; i < alist.size()-1; i++) {
                 othelloButtons[alist.get(i).x][alist.get(i).y].drawRectangle();
             }
         }
 
+        public void clearBoard() {
+            for (int row = 0; row < othello.getBoard().length; row++) {
+                for (int column = 0; column < othello.getBoard().length; column++) {
+                    othelloButtons[row][column].getChildren().clear();
+                }
+            }
+
+        }
         public void clicked(int player){
             othello.calcLegalMoves(player);
             boolean legalMoveExist = !othello.getLegalMoves().isEmpty();
 
             getChildren().clear();
-
             if(legalMoveExist) {
-
                 if (othello.checkLegalMoves(player, new Move(row, column))) {
+
                     draw(player);
                     othello.guiSwitchPlayer(row,column);
 
@@ -260,29 +267,18 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                     }
                 }
             } else {
+                //TODO:geht nur rein, wenn gepasst wird
+                Alert pass = new Alert(Alert.AlertType.INFORMATION);
+                pass.setContentText("player "+ othello.getPlayer()+" passed.");
+                pass.show();
+
                 othello.guiSwitchPlayer(row,column);
                 System.out.println("we are here");
 
-                if(othello.getPassCounter() == 2 || othello.checkFullBoard()) {
-                    System.out.println("we are here 22222");
 
-                    othello.checkWinner();
-                    if(othello.isGameEnd()) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Game has ended.");
-                        alert.setHeaderText("Who won?");
-                        if(othello.getBlackScore()>othello.getWhiteScore()) {
-                            alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
-                        } else if(othello.getBlackScore()<othello.getWhiteScore()) {
-                            alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
-                        } else {
-                            alert.setContentText("Draw.");
-                        }
-                        alert.show();
-                    }
-                }
             }
         }
+
 
         public void draw(int player) {
             Circle circle = new Circle(size / 2, size / 2, size / 2);

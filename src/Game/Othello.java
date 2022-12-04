@@ -156,7 +156,6 @@ public class Othello {
     }
 
     public boolean checkFullBoard() {
-
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board.length; j++) {
                 if(board[i][j] == EMPTY) {
@@ -167,30 +166,32 @@ public class Othello {
         return true;
     }
 
+
     public void checkWinner() {
         int blackCounter = 0;
         int whiteCounter = 0;
 
-        gameEnd = true;
-        System.out.println("Game has ended. No legal moves for both left.");
+        if(passCounter == 2 || checkFullBoard()) {
+            System.out.println("Game has ended. No legal moves for both left.");
+            gameEnd = true;
 
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board.length; j++) {
-                if(board[i][j] == BLACK) {
-                    blackCounter++;
-                } else if(board[i][j] == WHITE) {
-                    whiteCounter++;
+            for(int i = 0; i < board.length; i++) {
+                for(int j = 0; j < board.length; j++) {
+                    if(board[i][j] == BLACK) {
+                        blackCounter++;
+                    } else if(board[i][j] == WHITE) {
+                        whiteCounter++;
+                    }
                 }
             }
+            if(blackCounter>whiteCounter) {
+                System.out.println("Black has won.");
+            } else if(whiteCounter>blackCounter) {
+                System.out.println("White has won.");
+            } else {
+                System.out.println("Draw.");
+            }
         }
-        if(blackCounter>whiteCounter) {
-            System.out.println("Black has won.");
-        } else if(whiteCounter>blackCounter) {
-            System.out.println("White has won.");
-        } else {
-            System.out.println("Draw.");
-        }
-
     }
 
     public boolean checkLegalMoves(int player, Move move) {
