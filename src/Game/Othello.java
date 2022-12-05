@@ -455,9 +455,6 @@ public class Othello {
         return legalMoves;
     }
 
-    public int getEMPTY() {
-        return EMPTY;
-    }
 
     public int getBLACK() {
         return BLACK;
@@ -465,38 +462,6 @@ public class Othello {
 
     public int getWHITE() {
         return WHITE;
-    }
-
-    public boolean isDown() {
-        return down;
-    }
-
-    public boolean isUp() {
-        return up;
-    }
-
-    public boolean isLeft() {
-        return left;
-    }
-
-    public boolean isRight() {
-        return right;
-    }
-
-    public boolean isDiagLeftUp() {
-        return diagLeftUp;
-    }
-
-    public boolean isDiagLeftDown() {
-        return diagLeftDown;
-    }
-
-    public boolean isDiagRightUp() {
-        return diagRightUp;
-    }
-
-    public boolean isDiagRightDown() {
-        return diagRightDown;
     }
 
     public boolean isGameEnd() {

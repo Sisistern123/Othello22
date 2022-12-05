@@ -4,7 +4,6 @@ import Game.Othello;
 import KI.KI;
 import javafx.application.Application;
 
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -17,7 +16,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.w3c.dom.css.Rect;
 import szte.mi.Move;
 
 import java.util.ArrayList;
@@ -220,7 +218,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
         }
         public void clicked(int player) {
-            othello.calcLegalMoves(player);
+            othello.guiCalcLegalMoves(player);
             boolean legalMoveExist = !othello.getLegalMoves().isEmpty();
 
             getChildren().clear();
@@ -228,7 +226,9 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                 if (othello.checkLegalMoves(player, new Move(row, column))) {
 
                     draw(player);
-                    othello.guiSwitchPlayer(row,column);
+                    othello.guiSwitchPlayer(row,column); //board wird geupdated
+
+                    othello.guiCalcLegalMoves(othello.getPlayer()); //weil der player in othello geswitcht wird und nicht bei der Parameteruebergabe
 
                     for (int row = 0; row < othello.getBoard().length; row++) {
                         for (int column = 0; column < othello.getBoard().length; column++) {
@@ -239,9 +239,18 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                             } else if (othello.getBoard()[row][column] == othello.WHITE) {
                                 othelloButtons[row][column].draw(othello.WHITE);
                                 othelloButtons[row][column].setOnAction(null);
+                            } else if (othello.checkLegalMoves(othello.getPlayer(), new Move(row,column))) {
+                                for (Move move:othello.getLegalMoves()) {
+                                    System.out.println("x: "+ move.x + " y: " + move.y);
+                                }
+                                othelloButtons[row][column].drawRectangle();
+                            } else {
+                                othelloButtons[row][column].getChildren().clear();
                             }
                         }
                     }
+
+
                 }
             } else {
                 //geht nur rein, wenn gepasst wird
@@ -253,8 +262,6 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
             }
         }
-
-
 
         public void draw(int player) {
             Circle circle = new Circle(size / 2, size / 2, size / 2);

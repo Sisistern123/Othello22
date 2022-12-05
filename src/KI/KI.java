@@ -10,7 +10,6 @@ public class KI implements Player {
     private Othello othello;
     private int player;
     private int opponent;
-    private int currentPlayer = 1;
 
 
     @Override
@@ -32,27 +31,15 @@ public class KI implements Player {
     public Move nextMove(Move prevMove, long tOpponent, long t) {
 
         if(prevMove != null) {
-            if(othello.checkLegalMoves(currentPlayer, prevMove)) {
-                othello.directionFlip(currentPlayer, prevMove);
-                switchCurrentPlayer();
-            } else {
-                System.out.println("Illegal previous move.");
-            }
+            othello.directionFlip(opponent, new Move(prevMove.y, prevMove.x));
         }
 
-        othello.calcLegalMoves(currentPlayer);
+        othello.guiCalcLegalMoves(player);
 
         int random = othello.getLegalMoves().size()-1;
         Random r = new Random(); //random move from legalMoves ArrayList
-
-        return othello.getLegalMoves().get(r.nextInt(random));
+        Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
+        return new Move(randomMove.y,randomMove.x);
     }
 
-    public void switchCurrentPlayer() { //falls der derzeitige spieler black war, wurde er danach zu white gesetzt
-        if(currentPlayer == this.player) {
-            this.currentPlayer = this.opponent;
-        } else if(currentPlayer == this.opponent) {
-            this.currentPlayer = this.player;
-        }
-    }
 }
