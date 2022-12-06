@@ -31,7 +31,7 @@ public class KI implements Player {
     public Move nextMove(Move prevMove, long tOpponent, long t) {
 
         if(prevMove != null) {
-            othello.directionFlip(opponent, new Move(prevMove.y, prevMove.x));
+            othello.directionFlip(opponent, new Move(prevMove.x, prevMove.y));
         }
 
         othello.guiCalcLegalMoves(player);
@@ -40,7 +40,7 @@ public class KI implements Player {
             int random = othello.getLegalMoves().size()-1;
             Random r = new Random(); //random move from legalMoves ArrayList
             Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
-            return new Move(randomMove.y,randomMove.x);
+            return new Move(randomMove.x,randomMove.y);
         } else {
             return null;
         }
