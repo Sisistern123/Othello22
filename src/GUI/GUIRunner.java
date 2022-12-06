@@ -18,7 +18,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import szte.mi.Move;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
@@ -152,6 +151,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     @Override
     public void handle(ActionEvent e) {
         if(modeKI) {
+            //TODO: KI mit GUI verbinden
 
 
         } else {

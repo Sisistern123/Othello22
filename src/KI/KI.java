@@ -21,9 +21,7 @@ public class KI implements Player {
             player = 2;
             opponent = 1;
         }
-        if(this.othello == null) {
-            othello = new Othello();
-        }
+        othello = new Othello();
 
     }
 
@@ -31,16 +29,21 @@ public class KI implements Player {
     public Move nextMove(Move prevMove, long tOpponent, long t) {
 
         if(prevMove != null) {
-            othello.directionFlip(opponent, new Move(prevMove.x, prevMove.y));
+            othello.setOpponent(opponent);
+            othello.directionFlip(opponent, new Move(prevMove.y, prevMove.x));
         }
 
         othello.guiCalcLegalMoves(player);
 
         if(!othello.getLegalMoves().isEmpty()) {
-            int random = othello.getLegalMoves().size()-1;
-            Random r = new Random(); //random move from legalMoves ArrayList
+            int random = othello.getLegalMoves().size();
+            Random r = new Random(0); //random move from legalMoves ArrayList
             Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
-            return new Move(randomMove.x,randomMove.y);
+
+            if(randomMove != null) {
+                othello.directionFlip(player, randomMove);
+            }
+            return new Move(randomMove.y, randomMove.x);
         } else {
             return null;
         }

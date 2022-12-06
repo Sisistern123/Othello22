@@ -166,7 +166,6 @@ public class Othello {
         return true;
     }
 
-
     public void checkWinner() {
         int blackCounter = 0;
         int whiteCounter = 0;
