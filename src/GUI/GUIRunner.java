@@ -30,6 +30,8 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     SplitPane split;
     AnchorPane pane;
     GridPane grid;
+
+    KI hello;
     
     Label blackScore = new Label("");
     Label whiteScore = new Label("");
@@ -63,6 +65,10 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             modeKI = false;
         } else if(alert.getResult() == modeAI) {
             modeKI = true;
+
+            Random r = new Random();
+            hello = new KI();
+            hello.init(0, 1000L, r);
         }
 
         setPanes(grid);
@@ -146,9 +152,8 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
     @Override
     public void handle(ActionEvent e) {
         if(modeKI) {
-            Random r = new Random();
-            KI hello = new KI();
-            hello.init(0, 1000L, r);
+
+
         } else {
             if(e.getSource() instanceof OthelloButton) {
                 if(!othello.isGameEnd()) {
@@ -199,29 +204,18 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
         }
 
 
-        public void drawLegalMoves(int player) {
-            getChildren().clear();
-            othello.calcLegalMoves(player);
-            ArrayList<Move> alist = othello.getLegalMoves();
-
-            for (int i = 0; i < alist.size()-1; i++) {
-                othelloButtons[alist.get(i).x][alist.get(i).y].drawRectangle();
-            }
-        }
-
-        public void clearBoard() {
-            for (int row = 0; row < othello.getBoard().length; row++) {
-                for (int column = 0; column < othello.getBoard().length; column++) {
-                    othelloButtons[row][column].getChildren().clear();
-                }
-            }
-
-        }
         public void clicked(int player) {
             othello.guiCalcLegalMoves(player);
             boolean legalMoveExist = !othello.getLegalMoves().isEmpty();
 
             getChildren().clear();
+            //Bug Fix: falls gepasst wird, gib die legal Moves vom Gegner an
+            if(othello.getPassCounter() == 2) {
+                if (othello.checkLegalMoves(othello.getOpponent(), new Move(row,column))) {
+                    othelloButtons[row][column].drawRectangle();
+                }
+            }
+
             if(legalMoveExist) {
                 if (othello.checkLegalMoves(player, new Move(row, column))) {
 
@@ -240,9 +234,6 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                                 othelloButtons[row][column].draw(othello.WHITE);
                                 othelloButtons[row][column].setOnAction(null);
                             } else if (othello.checkLegalMoves(othello.getPlayer(), new Move(row,column))) {
-                                for (Move move:othello.getLegalMoves()) {
-                                    System.out.println("x: "+ move.x + " y: " + move.y);
-                                }
                                 othelloButtons[row][column].drawRectangle();
                             } else {
                                 othelloButtons[row][column].getChildren().clear();

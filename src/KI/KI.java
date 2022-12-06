@@ -36,10 +36,15 @@ public class KI implements Player {
 
         othello.guiCalcLegalMoves(player);
 
-        int random = othello.getLegalMoves().size()-1;
-        Random r = new Random(); //random move from legalMoves ArrayList
-        Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
-        return new Move(randomMove.y,randomMove.x);
+        if(!othello.getLegalMoves().isEmpty()) {
+            int random = othello.getLegalMoves().size()-1;
+            Random r = new Random(); //random move from legalMoves ArrayList
+            Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
+            return new Move(randomMove.y,randomMove.x);
+        } else {
+            return null;
+        }
+
     }
 
 }
