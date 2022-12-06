@@ -11,6 +11,16 @@ public class KI implements Player {
     private int player;
     private int opponent;
 
+    private int[][] name = {
+            {100, -10, 11, 6, 6, 11, -10, 100},
+            {-10, -20, 1, 2, 2, 1, -20, -10},
+            {10, 1, 5, 4, 4, 5, 1, 10},
+            {6, 2, 4, 2, 2, 4, 2, 6},
+            {6, 2, 4, 2, 2, 4, 2, 6},
+            {10, 1, 5, 4, 4, 5, 1, 10},
+            {-10, -20, 1, 2, 2, 1, -20, -10},
+            {100, -10, 11, 6, 6, 11, -10, 100}
+    };
 
     @Override
     public void init(int order, long t, Random rnd) {
@@ -23,6 +33,11 @@ public class KI implements Player {
         }
         othello = new Othello();
 
+    }
+
+    //TODO
+    public Move guiNextMove(Move prevMove) {
+        return null;
     }
 
     @Override
