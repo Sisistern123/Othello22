@@ -67,7 +67,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
             Random r = new Random();
             hello = new KI();
-            hello.init(0, 1000L, r);
+            hello.init(1);
         }
 
         setPanes(grid);
@@ -150,39 +150,40 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
 
     @Override
     public void handle(ActionEvent e) {
-        if(modeKI) {
-            //TODO: KI mit GUI verbinden
 
-
-        } else {
-            if(e.getSource() instanceof OthelloButton) {
-                if(!othello.isGameEnd()) {
+        if(e.getSource() instanceof OthelloButton) {
+            if(!othello.isGameEnd()) {
+                if(modeKI) {
+                    ((OthelloButton)e.getSource()).aiClicked(othello.getPlayer());
+                } else {
                     ((OthelloButton)e.getSource()).clicked(othello.getPlayer());
-                    blackScore.setText(""+othello.getBlackScore());
-                    whiteScore.setText(""+othello.getWhiteScore());
+                }
+                blackScore.setText(""+othello.getBlackScore());
+                whiteScore.setText(""+othello.getWhiteScore());
 
-                    othello.checkWinner();
+                othello.checkWinner();
 
-                    if(othello.isGameEnd()) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Game has ended.");
-                        alert.setHeaderText("Who won?");
-                        if(othello.getBlackScore()>othello.getWhiteScore()) {
-                            alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
-                        } else if(othello.getBlackScore()<othello.getWhiteScore()) {
-                            alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
-                        } else {
-                            alert.setContentText("Draw.");
-                        }
-                        alert.show();
+                if(othello.isGameEnd()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Game has ended.");
+                    alert.setHeaderText("Who won?");
+                    if(othello.getBlackScore()>othello.getWhiteScore()) {
+                        alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
+                    } else if(othello.getBlackScore()<othello.getWhiteScore()) {
+                        alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
+                    } else {
+                        alert.setContentText("Draw.");
                     }
+                    alert.show();
                 }
             }
         }
 
 
+
     }
 
+    //TTTGUI Musterlösung
     class OthelloButton extends Button {
         private int row;
         private int column;
@@ -203,6 +204,81 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
             getChildren().add(rectangle);
         }
 
+        public void aiClicked(int player) {
+            othello.calcLegalMoves(player);
+            boolean legalMoveExist = !othello.getLegalMoves().isEmpty();
+
+            getChildren().clear();
+            if(othello.getPassCounter() == 2) {
+                if (othello.checkLegalMoves(othello.getOpponent(), new Move(row,column))) {
+                    othelloButtons[row][column].drawRectangle();
+                }
+            }
+            if(legalMoveExist) {
+                if (othello.checkLegalMoves(player, new Move(row, column))) {
+
+                    draw(player);
+                    othello.guiSwitchPlayer(row,column); //board wird geupdated
+
+                    //calculated legal moves für opponent, weil grade geswitcht wurde in guiSwitchPlayer
+                    //weil der player in othello geswitcht wird und nicht bei der Parameteruebergabe
+                    othello.guiCalcLegalMoves(othello.getPlayer());
+
+                    Move aiMove = hello.guiNextMove(new Move(row, column));
+                    if(aiMove != null) {
+                        othello.guiSwitchPlayer(aiMove.x, aiMove.y);
+                    } else {
+                        Alert pass = new Alert(Alert.AlertType.INFORMATION);
+                        pass.setContentText("player "+ othello.getPlayer()+" passed.");
+                        pass.show();
+                        othello.guiSwitchPlayer();
+                    }
+                    getChildren().clear();
+                    updateBoard();
+                }
+            } else {
+                //geht nur rein, wenn gepasst wird
+                Alert pass = new Alert(Alert.AlertType.INFORMATION);
+                pass.setContentText("player "+ othello.getPlayer()+" passed.");
+                pass.show();
+
+                Move aiMove = hello.guiNextMove(null);
+                if(aiMove != null) {
+                    othello.guiSwitchPlayer(aiMove.x, aiMove.y);
+                } else {
+                    Alert p = new Alert(Alert.AlertType.INFORMATION);
+                    p.setContentText("player "+ othello.getPlayer()+" passed.");
+                    p.show();
+                    othello.guiSwitchPlayer();
+                }
+                getChildren().clear();
+                updateBoard();
+            }
+        }
+
+        public void updateBoard() {
+            for (int row = 0; row < othello.getBoard().length; row++) {
+                for (int column = 0; column < othello.getBoard().length; column++) {
+                    if (othello.getBoard()[row][column] == othello.BLACK) {
+                        othelloButtons[row][column].getChildren().clear();
+
+                        othelloButtons[row][column].draw(othello.BLACK);
+                        othelloButtons[row][column].setOnAction(null);
+                    } else if (othello.getBoard()[row][column] == othello.WHITE) {
+                        othelloButtons[row][column].getChildren().clear();
+
+                        othelloButtons[row][column].draw(othello.WHITE);
+                        othelloButtons[row][column].setOnAction(null);
+                    } else if (othello.checkLegalMoves(othello.getPlayer(), new Move(row,column))) {
+                        othelloButtons[row][column].getChildren().clear();
+
+                        othelloButtons[row][column].drawRectangle();
+                    } else {
+                        othelloButtons[row][column].getChildren().clear();
+                    }
+                }
+            }
+        }
 
         public void clicked(int player) {
             othello.guiCalcLegalMoves(player);

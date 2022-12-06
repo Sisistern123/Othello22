@@ -155,6 +155,16 @@ public class Othello {
         }
     }
 
+    public void guiSwitchPlayer() {
+        if(player == 1) {
+            player = 2;
+            setOpponent(player);
+        } else {
+            player = 1;
+            setOpponent(player);
+        }
+    }
+
     public boolean checkFullBoard() {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board.length; j++) {
