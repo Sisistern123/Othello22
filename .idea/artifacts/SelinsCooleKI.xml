@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SelinsCooleKI">
+    <output-path>$PROJECT_DIR$/out/artifacts/SelinsCooleKI</output-path>
+    <root id="archive" name="SelinsCooleKI.jar">
+      <element id="file-copy" path="$PROJECT_DIR$/src/Game/Othello.java" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/KI" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/szte" />
+    </root>
+  </artifact>
+</component>
