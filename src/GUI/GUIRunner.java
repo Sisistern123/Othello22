@@ -168,9 +168,17 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                     alert.setTitle("Game has ended.");
                     alert.setHeaderText("Who won?");
                     if(othello.getBlackScore()>othello.getWhiteScore()) {
-                        alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
+                        if(modeKI) {
+                            alert.setContentText("Player has won with "+othello.getBlackScore()+" stones.");
+                        } else {
+                            alert.setContentText("Black has won with "+othello.getBlackScore()+" stones.");
+                        }
                     } else if(othello.getBlackScore()<othello.getWhiteScore()) {
-                        alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
+                        if(modeKI) {
+                            alert.setContentText("AI has won with "+othello.getWhiteScore()+" stones.");
+                        } else {
+                            alert.setContentText("White has won with "+othello.getWhiteScore()+" stones.");
+                        }
                     } else {
                         alert.setContentText("Draw.");
                     }
