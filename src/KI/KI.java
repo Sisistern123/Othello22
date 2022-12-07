@@ -12,7 +12,7 @@ public class KI implements Player {
     private int opponent;
 
     //https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf
-    private int[][] weightMatrix = {
+    private final int[][] weightMatrix = {
             {100, -10, 11, 6, 6, 11, -10, 100},
             {-10, -20, 1, 2, 2, 1, -20, -10},
             {10, 1, 5, 4, 4, 5, 1, 10},
