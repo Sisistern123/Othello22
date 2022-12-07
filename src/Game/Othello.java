@@ -53,7 +53,6 @@ public class Othello {
 
     //Methoden für GUI und für Terminal separat gemacht, sorry für den Spaghetti-Code
 
-
     public void switchPlayer() {
 
         Scanner sc = new Scanner(System.in);
@@ -180,10 +179,21 @@ public class Othello {
         int blackCounter = 0;
         int whiteCounter = 0;
 
-        if(passCounter == 2 || checkFullBoard()) {
+        if(checkFullBoard()) {
             System.out.println("Game has ended. No legal moves for both left.");
             gameEnd = true;
+        }
 
+        guiCalcLegalMoves(BLACK);
+        if(getLegalMoves().isEmpty()) {
+            guiCalcLegalMoves(WHITE);
+            if(getLegalMoves().isEmpty()) {
+                gameEnd = true;
+            }
+        }
+
+
+        if(gameEnd) {
             for(int i = 0; i < board.length; i++) {
                 for(int j = 0; j < board.length; j++) {
                     if(board[i][j] == BLACK) {
@@ -248,7 +258,7 @@ public class Othello {
         }
         if(legalMoves.isEmpty()) {
             passCounter++;
-        } else {
+        } else if (passCounter>1){
             passCounter = 0;
         }
     }
@@ -439,7 +449,6 @@ public class Othello {
         }
     }
 
-
     public void printBoard()
     {
         System.out.println
@@ -463,7 +472,6 @@ public class Othello {
     public ArrayList<Move> getLegalMoves() {
         return legalMoves;
     }
-
 
     public int getBLACK() {
         return BLACK;
@@ -512,6 +520,4 @@ public class Othello {
         }
         return black;
     }
-
-
 }

@@ -160,7 +160,7 @@ public class GUIRunner extends Application implements EventHandler<ActionEvent> 
                 }
                 blackScore.setText(""+othello.getBlackScore());
                 whiteScore.setText(""+othello.getWhiteScore());
-
+                //System.out.println(othello.getPassCounter()); //for Bug Fix
                 othello.checkWinner();
 
                 if(othello.isGameEnd()) {

@@ -12,7 +12,7 @@ public class KI implements Player {
     private int opponent;
 
     //https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf
-    private int[][] name = {
+    private int[][] weightMatrix = {
             {100, -10, 11, 6, 6, 11, -10, 100},
             {-10, -20, 1, 2, 2, 1, -20, -10},
             {10, 1, 5, 4, 4, 5, 1, 10},
@@ -82,14 +82,20 @@ public class KI implements Player {
         othello.guiCalcLegalMoves(player);
 
         if(!othello.getLegalMoves().isEmpty()) {
-            int random = othello.getLegalMoves().size();
-            Random r = new Random(0); //random move from legalMoves ArrayList
-            Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
+            //int random = othello.getLegalMoves().size();
+            //Random r = new Random(0); //random move from legalMoves ArrayList
+            //Move randomMove = othello.getLegalMoves().get(r.nextInt(random));
 
-            if(randomMove != null) {
-                othello.directionFlip(player, randomMove);
+            Move bestMove = othello.getLegalMoves().get(0);
+            for (Move move: othello.getLegalMoves()) {
+                if(weightMatrix[move.y][move.x] > weightMatrix[bestMove.y][bestMove.x]) {
+                    bestMove = move;
+                }
             }
-            return new Move(randomMove.y, randomMove.x);
+            if(bestMove != null) {
+                othello.directionFlip(player, bestMove);
+            }
+            return new Move(bestMove.y, bestMove.x);
         } else {
             return null;
         }

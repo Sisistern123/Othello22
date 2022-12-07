@@ -3,6 +3,14 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Othello22_jar</output-path>
     <root id="archive" name="Othello22.jar">
       <element id="module-output" name="Othello22" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_JAVAFX$/javafx.graphics.jar" path-in-jar="/" />
       <element id="dir-copy" path="$PROJECT_DIR$/src" />
     </root>
   </artifact>
